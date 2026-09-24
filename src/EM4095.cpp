@@ -1,24 +1,24 @@
 // Credits: https://github.com/decrazyo/fdxb
-#include "FdxB.h"
+#include "EM4095.h"
 #define PACKET_SIZE 128 // bits
 
-FdxB::Parser::Parser(uint32_t carrierHz, size_t bufferSize) {
+EM4095::EM4095(uint32_t carrierHz, size_t bufferSize) {
   mDecoder = new Decoder(carrierHz, bufferSize);
 }
 
-FdxB::Parser::~Parser() {
+EM4095::~EM4095() {
   delete mDecoder;
 }
 
-void FdxB::Parser::putStateChange(uint16_t time) {
+void EM4095::putStateChange(uint16_t time) {
   mDecoder->putStateChange(time);
 }
 
-bool FdxB::Parser::getTag(tag_t *tag) {
+bool EM4095::getTag(tag_t *tag) {
   return getData((uint8_t *)tag);
 }
 
-bool FdxB::Parser::findHeader() {
+bool EM4095::findHeader() {
   uint8_t bit;
   uint8_t count = 0;
   if (mDecoder->length() < PACKET_SIZE) {
@@ -51,7 +51,7 @@ bool FdxB::Parser::findHeader() {
   return true;
 }
 
-bool FdxB::Parser::getByte(uint8_t *value) {
+bool EM4095::getByte(uint8_t *value) {
   uint8_t bit;
 
   *value = 0;
@@ -77,7 +77,7 @@ bool FdxB::Parser::getByte(uint8_t *value) {
 }
 
 // https://stackoverflow.com/questions/57893261
-uint16_t FdxB::Parser::crc16k(uint16_t crc, uint8_t *mem, uint8_t len) {
+uint16_t EM4095::crc16k(uint16_t crc, uint8_t *mem, uint8_t len) {
   uint8_t *data = mem;
 
   if (data == NULL) {
@@ -93,7 +93,7 @@ uint16_t FdxB::Parser::crc16k(uint16_t crc, uint8_t *mem, uint8_t len) {
   return crc;
 }
 
-bool FdxB::Parser::getData(uint8_t *data) {
+bool EM4095::getData(uint8_t *data) {
   // Block until we identify a valid tag header.
   if (!findHeader()) {
     return false;

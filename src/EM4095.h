@@ -1,0 +1,31 @@
+// Credits: https://github.com/decrazyo/fdxb
+#ifndef EM4095_H
+#define EM4095_H
+
+#include "Arduino.h"
+#include "util.h"
+#include "Decoder.h"
+#include <stdint.h>
+
+
+class EM4095 {
+public:
+  EM4095(uint32_t carrierHz = FDXB_CARRIER_HZ,
+         size_t bufferSize = FDXB_BUFFER_SIZE);
+  ~EM4095();
+
+  inline void putStateChange() { putStateChange(micros()); }
+  void putStateChange(uint16_t time);
+  bool getTag(tag_t *tag);
+
+private:
+  Decoder *mDecoder;
+
+  bool findHeader();
+  bool getByte(uint8_t *value);
+  uint16_t crc16k(uint16_t crc, uint8_t *mem, uint8_t len);
+  bool getData(uint8_t *data);
+  size_t antennaIndex;
+};
+
+#endif

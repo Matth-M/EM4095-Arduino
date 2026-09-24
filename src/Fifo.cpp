@@ -1,18 +1,15 @@
 // Credits: https://github.com/decrazyo/fdxb
-#include "FdxB.h"
+#include "EM4095.h"
+#include "./Fifo.h"
 
-FdxB::Fifo::Fifo(size_t size) {
+Fifo::Fifo(size_t size) {
   mBuffer = (rfdata_t *)malloc(size * sizeof(rfdata_t));
   mSize = size;
 }
 
-FdxB::Fifo::~Fifo() {
-  free(mBuffer);
-}
+Fifo::~Fifo() { free(mBuffer); }
 
-
-void FdxB::Fifo::push(rfdata_t data) {
-  Serial.println(mWrite);
+void Fifo::push(rfdata_t data) {
   mBuffer[mWrite] = data;
   next(&mWrite);
   if (empty()) {
@@ -20,7 +17,7 @@ void FdxB::Fifo::push(rfdata_t data) {
   }
 }
 
-bool FdxB::Fifo::pop(rfdata_t *data) {
+bool Fifo::pop(rfdata_t *data) {
   bool status = peek(data);
   if (status) {
     next(&mRead);
@@ -28,7 +25,7 @@ bool FdxB::Fifo::pop(rfdata_t *data) {
   return status;
 }
 
-bool FdxB::Fifo::peek(rfdata_t *value) {
+bool Fifo::peek(rfdata_t *value) {
   if (empty()) {
     return false;
   }
@@ -36,11 +33,9 @@ bool FdxB::Fifo::peek(rfdata_t *value) {
   return true;
 }
 
-bool FdxB::Fifo::empty() {
-  return mRead == mWrite;
-}
+bool Fifo::empty() { return mRead == mWrite; }
 
-inline void FdxB::Fifo::next(uint8_t *index) {
+inline void Fifo::next(uint8_t *index) {
   if (*index) {
     (*index)--;
   } else {
@@ -48,7 +43,7 @@ inline void FdxB::Fifo::next(uint8_t *index) {
   }
 }
 
-size_t FdxB::Fifo::length() {
+size_t Fifo::length() {
   // Buffer grows downwards
   // mRead is inferior to mWrite, it means the write crossed the
   // end of the buffer and has been reset to mSize - 1.
