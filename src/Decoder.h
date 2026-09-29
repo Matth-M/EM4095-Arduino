@@ -8,19 +8,19 @@
 
 class Decoder {
 public:
-  Decoder(uint32_t carrierHz = FDXB_CARRIER_HZ,
-          size_t bufferSize = FDXB_BUFFER_SIZE);
-  ~Decoder();
+  Decoder(uint32_t carrierHz = FDXB_CARRIER_HZ);
 
   inline void putStateChange() { putStateChange(micros()); }
-  void putStateChange(uint16_t timeUs);
+	void parseTimestamps();
+  void putStateChange(uint32_t timeUs);
   bool getBit(uint8_t *value);
-  uint8_t length();
+  size_t length();
 
 private:
-  Fifo *mRFData;
-  uint16_t mLastStateChangeUs;
+  Fifo<rfdata_t, FDXB_BUFFER_SIZE> mRFData;
+	Fifo<uint32_t, 256> mTimestamps;
+  uint32_t mLastStateChangeUs;
   float mBaud;
-  bool getDelta(uint8_t *value);
+bool mShortBefore;
 };
 #endif

@@ -1,17 +1,10 @@
 // Credits: https://github.com/decrazyo/fdxb
 #include "EM4095.h"
-#define PACKET_SIZE 128 // bits
-
-EM4095::EM4095(uint32_t carrierHz, size_t bufferSize) {
-  mDecoder = new Decoder(carrierHz, bufferSize);
-}
-
-EM4095::~EM4095() {
-  delete mDecoder;
-}
+#include "util.h"
+#include "Arduino.h"
 
 void EM4095::putStateChange(uint16_t time) {
-  mDecoder->putStateChange(time);
+  mDecoder.putStateChange(time);
 }
 
 bool EM4095::getTag(tag_t *tag) {
@@ -21,15 +14,15 @@ bool EM4095::getTag(tag_t *tag) {
 bool EM4095::findHeader() {
   uint8_t bit;
   uint8_t count = 0;
-  if (mDecoder->length() < PACKET_SIZE) {
+  if (mDecoder.length() < PACKET_SIZE) {
     return false;
   }
-  // Serial.println("enough state change");
+  Serial.println("enough bits");
 
   // The header starts with 10 zeros and ends with a one.
   // Don't exit this loop until we find the header.
   while (true) {
-    if (!mDecoder->getBit(&bit)) {
+    if (!mDecoder.getBit(&bit)) {
       return false;
       // bit read failed
       count = 0;
@@ -40,11 +33,12 @@ bool EM4095::findHeader() {
       } else {
         // expected another 0, got 1
         count = 0;
+				return false;
       }
     } else if (count < 10) {  // Found 0
       count++;
     }
-    // if (mDecoder->length() == 0) {
+    // if (mDecoder.length() == 0) {
     //   return false;
     // }
   }
@@ -57,14 +51,14 @@ bool EM4095::getByte(uint8_t *value) {
   *value = 0;
 
   for (uint8_t i = 0; i < 8; i++) {
-    if (!mDecoder->getBit(&bit)) {
+    if (!mDecoder.getBit(&bit)) {
       // failed bit read
       return false;
     }
     *value |= bit << i;
   }
 
-  if (!mDecoder->getBit(&bit)) {
+  if (!mDecoder.getBit(&bit)) {
     // failed control bit read
     return false;
   } else if (bit) {

@@ -2,6 +2,8 @@
 #define UTIL_H
 #include <stdint.h>
 
+#define PACKET_SIZE 128 // bits
+
 // ISO 11784/11785 RFID tag carrier frequency 134.2kHz.
 #ifndef FDXB_CARRIER_HZ
 #define FDXB_CARRIER_HZ 132400

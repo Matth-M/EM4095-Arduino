@@ -4,24 +4,67 @@
 #include "util.h"
 #include <stdint.h>
 
+// C: capacity
+template <typename T, size_t C>
 class Fifo {
   // Simple first in, first out (FIFO) ring buffer.
 public:
-  Fifo(size_t size = FDXB_BUFFER_SIZE);
-  ~Fifo();
+  Fifo()=default;
+  ~Fifo()=default;
 
-  void push(rfdata_t value);
-  bool pop(rfdata_t *value);
-  bool peek(rfdata_t *value);
-  size_t length();
-  bool empty();
+  void push(T data) {
+    mBuffer[mWrite] = data;
+    next(&mWrite);
+    if (empty()) {
+      next(&mRead);
+    }
+  }
+
+  bool pop(T *data) {
+    bool status = peek(data);
+    if (status) {
+      next(&mRead);
+    }
+    return status;
+  }
+
+  bool peek(T *value) {
+    if (empty()) {
+      return false;
+    }
+    *value = mBuffer[mRead];
+    return true;
+  }
+  size_t length() {
+    // Buffer grows downwards
+    // mRead is inferior to mWrite, it means the write crossed the
+    // end of the buffer and has been reset to mSize - 1.
+
+    // Serial.print("mRead: ");
+    // Serial.print(mRead);
+    // Serial.print("\tmWrite: ");
+    // Serial.println(mWrite);
+
+    if (mRead < mWrite) {
+      return mSize - mWrite + mRead;
+    } else {
+      return mRead - mWrite;
+    }
+  }
+  bool empty() { return mRead == mWrite; }
 
 private:
-  size_t mSize;
-  rfdata_t *mBuffer;
-  uint8_t mRead = 0;
-  uint8_t mWrite = 0;
+  size_t mSize = C;
+  T mBuffer[C] = {};
+  size_t mRead = 0;
+  size_t mWrite = 0;
 
-  inline void next(uint8_t *index);
+  inline void next(size_t *index) {
+    if (*index) {
+      (*index)--;
+    } else {
+      *index = mSize - 1;
+    }
+  }
 };
 #endif
