@@ -9,70 +9,64 @@ Decoder::Decoder(uint32_t carrierHz) {
   float carrierPeriod = 1 / (carrierHz / 1000000.0);
   mBaud = carrierPeriod * 16;
   mShortBefore = false;
-	mLastStateChangeUs = 0;
 }
 
 void Decoder::putStateChange(uint32_t timeUs) {
-	// https://github.com/espressif/arduino-esp32/issues/3697#issuecomment-580715641
-	// If ISR runs for more than 300us -> WDT trigger
+  // https://github.com/espressif/arduino-esp32/issues/3697#issuecomment-580715641
+  // If ISR runs for more than 300us -> WDT trigger
 
-	mTimestamps.push(timeUs);
+  mTimestamps.push(timeUs);
 }
 
-void Decoder::parseTimestamps(){
-	uint32_t timeUs;
-	for(int i =0; i< mTimestamps.length(); i++) {
-		mTimestamps.pop(&timeUs);
-
-	}
-  uint16_t delta;
-  // Determine the time in microseconds since the previous interrupt.
-  if (timeUs < mLastStateChangeUs)
-    // The microseconds counter has overflowed so the math is different.
-    delta = timeUs + (~mLastStateChangeUs);
-  else
-    // The time between interrupts is greater than an unsigned 8-bit int.
-    // It's probably garbage data or RF noise.
-    delta = timeUs - mLastStateChangeUs;
-
-  mLastStateChangeUs = timeUs;
-
-  rfdata_t data;
+void Decoder::parseTimestamps() {
+  // For each pair of timestamps, check if it's a long or short period
   // https://www.priority1design.com.au/fdx-b_animal_identification_protocol.html
-  // A long period corresponds to a logical 1, and a short period to logical 0
-  uint8_t periodCount = (uint8_t)round(delta / mBaud);
+  // A long period corresponds to a logical 1, and 2 consecutive short period to logical 0
+	// In case of 00 (short -> short -> short -> short), we need to keep track of the first
+	// time a short period of a logical 0
 
-  // data.data = 0;
-  // data.valid = true;
-  // mRFData.push(data);
-  // return;
 
-  // uint8_t periodCount = 2;
-  switch (periodCount) {
-  case 1:
-    if (mShortBefore) {
-      mShortBefore = false;
-      data.data = 0;
+	size_t timestampsCount = mTimestamps.length();
+	if(timestampsCount < 2) {
+		// Need at least 2 timestamps to have a period
+		return;
+	}
+  uint32_t beforeUs, afterUs;
+  uint32_t delta;
+  rfdata_t data;
+	// Check until last timestamps, keep it for next call
+  for (int i = 0; i < timestampsCount - 1; i++) {
+    mTimestamps.pop(&beforeUs);
+    mTimestamps.peek(&afterUs);
+    delta = afterUs + (~beforeUs);
+
+    uint8_t periodCount = (uint8_t)round(delta / mBaud);
+    switch (periodCount) {
+    case 1:
+      if (mShortBefore) {
+        mShortBefore = false;
+        data.data = 0;
+        data.valid = true;
+        mRFData.push(data);
+        break;
+      }
+      if (!mShortBefore) {
+        mShortBefore = true;
+        break;
+      }
+    case 2:
+      break;
+      data.data = 1;
       data.valid = true;
       mRFData.push(data);
       break;
-    }
-    if (!mShortBefore) {
-      mShortBefore = true;
+    default:
+      mShortBefore = false;
+      data.data = 0;
+      data.valid = false;
+      mRFData.push(data);
       break;
     }
-  case 2:
-    break;
-    data.data = 1;
-    data.valid = true;
-    mRFData.push(data);
-    break;
-  default:
-		mShortBefore = false;
-    data.data = 0;
-    data.valid = false;
-    mRFData.push(data);
-    break;
   }
 }
 
