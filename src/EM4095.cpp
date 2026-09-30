@@ -18,7 +18,6 @@ bool EM4095::findHeader() {
   if (mDecoder.length() < PACKET_SIZE) {
     return false;
   }
-  Serial.println("enough bits");
 
   // The header starts with 10 zeros and ends with a one.
   // Don't exit this loop until we find the header.

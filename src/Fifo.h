@@ -40,11 +40,6 @@ public:
     // mRead is inferior to mWrite, it means the write crossed the
     // end of the buffer and has been reset to mSize - 1.
 
-    // Serial.print("mRead: ");
-    // Serial.print(mRead);
-    // Serial.print("\tmWrite: ");
-    // Serial.println(mWrite);
-
     if (mRead < mWrite) {
       return mSize - mWrite + mRead;
     } else {

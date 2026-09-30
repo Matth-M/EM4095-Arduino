@@ -14,7 +14,6 @@ Decoder::Decoder(uint32_t carrierHz) {
 void Decoder::putStateChange(uint32_t timeUs) {
   // https://github.com/espressif/arduino-esp32/issues/3697#issuecomment-580715641
   // If ISR runs for more than 300us -> WDT trigger
-
   mTimestamps.push(timeUs);
 }
 
