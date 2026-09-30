@@ -8,6 +8,7 @@ void EM4095::putStateChange(uint32_t time) {
 }
 
 bool EM4095::getTag(tag_t *tag) {
+	mDecoder.parseTimestamps();
   return getData((uint8_t *)tag);
 }
 
