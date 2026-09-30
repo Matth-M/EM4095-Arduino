@@ -3,16 +3,10 @@
 #include <stdint.h>
 
 #define PACKET_SIZE 128 // bits
-
 // ISO 11784/11785 RFID tag carrier frequency 134.2kHz.
-#ifndef FDXB_CARRIER_HZ
 #define FDXB_CARRIER_HZ 132400
-#endif
-
-#ifndef FDXB_BUFFER_SIZE
-#define FDXB_BUFFER_SIZE                                                       \
-  1024 // a tag sends 128 of data, can contain a few tag message
-#endif
+#define FDXB_BUFFER_SIZE (8 * PACKET_SIZE) // a tag sends 128 of data, can contain a few tag message
+#define TIMESTAMPS_BUF_SIZE 1024
 
 #pragma pack(1)
 typedef struct Tag {
