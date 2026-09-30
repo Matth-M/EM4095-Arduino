@@ -14,7 +14,7 @@ public:
   ~EM4095() = default;
 
   inline void putStateChange() { putStateChange(micros()); }
-  void putStateChange(uint16_t time);
+  void putStateChange(uint32_t time);
   bool getTag(tag_t *tag);
 
 private:

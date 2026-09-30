@@ -3,7 +3,7 @@
 #include "util.h"
 #include "Arduino.h"
 
-void EM4095::putStateChange(uint16_t time) {
+void EM4095::putStateChange(uint32_t time) {
   mDecoder.putStateChange(time);
 }
 
