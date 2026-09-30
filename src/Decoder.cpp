@@ -35,10 +35,10 @@ void Decoder::parseTimestamps() {
   uint32_t delta;
   rfdata_t data;
 	// Check until last timestamps, keep it for next call
-  for (int i = 0; i < timestampsCount - 1; i++) {
+  for (size_t i = 0; i < timestampsCount - 1; i++) {
     mTimestamps.pop(&beforeUs);
     mTimestamps.peek(&afterUs);
-    delta = afterUs + (~beforeUs);
+    delta = afterUs - beforeUs;
 
     uint8_t periodCount = (uint8_t)round(delta / mBaud);
     switch (periodCount) {
@@ -55,7 +55,6 @@ void Decoder::parseTimestamps() {
         break;
       }
     case 2:
-      break;
       data.data = 1;
       data.valid = true;
       mRFData.push(data);
