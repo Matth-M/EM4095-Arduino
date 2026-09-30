@@ -3,10 +3,9 @@
 #define EM4095_H
 
 #include "Arduino.h"
-#include "util.h"
 #include "Decoder.h"
+#include "util.h"
 #include <stdint.h>
-
 
 class EM4095 {
 public:

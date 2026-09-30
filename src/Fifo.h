@@ -5,12 +5,11 @@
 #include <stdint.h>
 
 // C: capacity
-template <typename T, size_t C>
-class Fifo {
+template <typename T, size_t C> class Fifo {
   // Simple first in, first out (FIFO) ring buffer.
 public:
-  Fifo()=default;
-  ~Fifo()=default;
+  Fifo() = default;
+  ~Fifo() = default;
 
   void push(T data) {
     mBuffer[mWrite] = data;

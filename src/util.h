@@ -5,7 +5,8 @@
 #define PACKET_SIZE 128 // bits
 // ISO 11784/11785 RFID tag carrier frequency 134.2kHz.
 #define FDXB_CARRIER_HZ 132400
-#define FDXB_BUFFER_SIZE (8 * PACKET_SIZE) // a tag sends 128 of data, can contain a few tag message
+#define FDXB_BUFFER_SIZE                                                       \
+  (8 * PACKET_SIZE) // a tag sends 128 of data, can contain a few tag message
 #define TIMESTAMPS_BUF_SIZE 1024
 
 #pragma pack(1)

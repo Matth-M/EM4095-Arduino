@@ -1,14 +1,12 @@
 // Credits: https://github.com/decrazyo/fdxb
 #include "EM4095.h"
-#include "util.h"
 #include "Arduino.h"
+#include "util.h"
 
-void EM4095::putStateChange(uint32_t time) {
-  mDecoder.putStateChange(time);
-}
+void EM4095::putStateChange(uint32_t time) { mDecoder.putStateChange(time); }
 
 bool EM4095::getTag(tag_t *tag) {
-	mDecoder.parseTimestamps();
+  mDecoder.parseTimestamps();
   return getData((uint8_t *)tag);
 }
 
@@ -26,16 +24,16 @@ bool EM4095::findHeader() {
       return false;
       // bit read failed
       count = 0;
-    } else if (bit) {  // Found 1
+    } else if (bit) { // Found 1
       if (count >= 10) {
         // header identified
         break;
       } else {
         // expected another 0, got 1
         count = 0;
-				return false;
+        return false;
       }
-    } else if (count < 10) {  // Found 0
+    } else if (count < 10) { // Found 0
       count++;
     }
     // if (mDecoder.length() == 0) {
@@ -92,7 +90,6 @@ bool EM4095::getData(uint8_t *data) {
   if (!findHeader()) {
     return false;
   }
-
 
   tag_t *tag = (tag_t *)data;
 
