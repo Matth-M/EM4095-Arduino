@@ -12,11 +12,12 @@ public:
   EM4095() = default;
   ~EM4095() = default;
 
-	void begin(int enShdPin, int dmodPin, int clkPin);
+  void begin(int enShdPin, int dmodPin, int clkPin);
   inline void putStateChange() { putStateChange(micros()); }
   void putStateChange(uint32_t time);
   bool getTag(tag_t *tag);
   double antennaFrequency();
+  void printTag(tag_t *tag);
   void enableReader();
   void disableReader();
 

@@ -166,3 +166,17 @@ double EM4095::antennaFrequency() {
   double frequency = 1000000.0 / (elapsed_time_us / clk_period_count);
   return frequency;
 }
+
+void EM4095::printTag(tag_t* tag) {
+  char buffer[256];
+
+  // printf cannot format integers larger then 32-bits.
+  // The id field is 38-bits so we need to do some additional processing to it.
+  uint32_t idMsd = tag->id / 1000000000;
+  uint32_t idLsd = tag->id % 1000000000;
+  uint32_t data = tag->data[0] << 16 | tag->data[1] << 8 | tag->data[2];
+
+  // This is the format that pet microchip lookup websites expect.
+  sprintf(buffer, "country: %03u\tid: %03u%09u\tdata: %ld", (uint16_t)tag->country, idMsd, idLsd, data);
+  Serial.println(buffer);
+}
