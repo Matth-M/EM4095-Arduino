@@ -1,0 +1,9 @@
+EM4095_FDXB KEYWORD1
+
+begin KEYWORD2
+putStateChange KEYWORD2
+getTag KEYWORD2
+antennaFrequency KEYWORD2
+printTag KEYWORD2
+enableReader KEYWORD2
+disableReader KEYWORD2
