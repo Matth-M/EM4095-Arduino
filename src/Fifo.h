@@ -1,7 +1,5 @@
 #ifndef FIFO_H
 #define FIFO_H
-#include "./EM4095.h"
-#include "util.h"
 #include <stdint.h>
 
 // C: capacity

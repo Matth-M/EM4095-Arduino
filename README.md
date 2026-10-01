@@ -2,10 +2,12 @@ Fork of [fdxb](https://github.com/decrazyo/fdxb). Read RFID tags (like [Biomark 
 
 # Usage
 ```cpp
+
+#include <EM4095_FDXB.h> // https://github.com/Matth-M/EM4095-FDXB-Arduino
 #define EN_SHD 17   // Enable pin
 #define DMOD 18     // Data from EM4095 reader
 #define RDY_CLK 19  // Frequency signal from EM4095 reader
-EM4095 parser;
+EM4095_FDXB parser;
 
 void dmodChangeISR() {
     parser.putStateChange();

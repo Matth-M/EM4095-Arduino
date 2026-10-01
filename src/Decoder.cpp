@@ -1,6 +1,6 @@
 // Credits: https://github.com/decrazyo/fdxb
 #include "Arduino.h"
-#include "EM4095.h"
+#include "./Decoder.h"
 
 Decoder::Decoder(uint32_t carrierHz) {
   // RFID tags use the carrier frequency as a clock signal.

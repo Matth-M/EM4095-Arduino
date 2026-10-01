@@ -1,6 +1,5 @@
 #ifndef DECODER_H
 #define DECODER_H
-#include "./EM4095.h"
 #include "./Fifo.h"
 #include "Arduino.h"
 #include "util.h"
