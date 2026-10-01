@@ -12,17 +12,25 @@ public:
   EM4095() = default;
   ~EM4095() = default;
 
+	void begin(int enShdPin, int dmodPin, int clkPin);
   inline void putStateChange() { putStateChange(micros()); }
   void putStateChange(uint32_t time);
   bool getTag(tag_t *tag);
+  double antennaFrequency();
+  void enableReader();
+  void disableReader();
 
 private:
-  Decoder mDecoder;
+  Decoder _decoder;
 
   bool findHeader();
   bool getByte(uint8_t *value);
   uint16_t crc16k(uint16_t crc, uint8_t *mem, uint8_t len);
   bool getData(uint8_t *data);
+  void dmod_change();
+  int _enShdPin;
+  int _dmodPin;
+  int _clkPin;
 };
 
 #endif

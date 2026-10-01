@@ -19,7 +19,7 @@ public:
 private:
   Fifo<rfdata_t, FDXB_BUFFER_SIZE> mRFData;
   Fifo<uint32_t, TIMESTAMPS_BUF_SIZE> mTimestamps;
-  float mBaud;
-  bool mShortBefore;
+  float _baud;
+  bool _shortBefore;
 };
 #endif

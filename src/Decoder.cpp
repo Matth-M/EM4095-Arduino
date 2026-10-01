@@ -7,8 +7,8 @@ Decoder::Decoder(uint32_t carrierHz) {
   // That causes the data rate to be a function of the carrier frequency.
   // Determine the period of one clock cycle in microseconds.
   float carrierPeriod = 1 / (carrierHz / 1000000.0);
-  mBaud = carrierPeriod * 16;
-  mShortBefore = false;
+  _baud = carrierPeriod * 16;
+  _shortBefore = false;
 }
 
 void Decoder::putStateChange(uint32_t timeUs) {
@@ -29,7 +29,7 @@ void Decoder::parseTimestamps() {
     // Need at least 2 timestamps to have a period
     return;
   }
-  uint32_t beforeUs, afterUs;
+  uint32_t beforeUs = 0, afterUs = 0;
   uint32_t delta;
   rfdata_t data;
   // Check until last timestamps, keep it for next call
@@ -38,18 +38,18 @@ void Decoder::parseTimestamps() {
     mTimestamps.peek(&afterUs);
     delta = afterUs - beforeUs;
 
-    uint8_t periodCount = (uint8_t)round(delta / mBaud);
+    uint8_t periodCount = (uint8_t)round(delta / _baud);
     switch (periodCount) {
     case 1:
-      if (mShortBefore) {
-        mShortBefore = false;
+      if (_shortBefore) {
+        _shortBefore = false;
         data.data = 0;
         data.valid = true;
         mRFData.push(data);
         break;
       }
-      if (!mShortBefore) {
-        mShortBefore = true;
+      if (!_shortBefore) {
+        _shortBefore = true;
         break;
       }
     case 2:
@@ -58,7 +58,7 @@ void Decoder::parseTimestamps() {
       mRFData.push(data);
       break;
     default:
-      mShortBefore = false;
+      _shortBefore = false;
       data.data = 0;
       data.valid = false;
       mRFData.push(data);
