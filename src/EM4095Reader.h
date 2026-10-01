@@ -1,16 +1,16 @@
 // Credits: https://github.com/decrazyo/fdxb
-#ifndef EM4095_FDXB_H
-#define EM4095_FDXB_H
+#ifndef EM4095Reader_H
+#define EM4095Reader_H
 
 #include "Arduino.h"
 #include "Decoder.h"
 #include "util.h"
 #include <stdint.h>
 
-class EM4095_FDXB {
+class EM4095Reader {
 public:
-  EM4095_FDXB() = default;
-  ~EM4095_FDXB() = default;
+  EM4095Reader() = default;
+  ~EM4095Reader() = default;
 
   void begin(int enShdPin, int dmodPin, int clkPin);
   inline void putStateChange() { putStateChange(micros()); }
