@@ -18,6 +18,7 @@ public:
   bool getTag(tag_t *tag);
   double antennaFrequency();
   void printTag(tag_t *tag);
+  void parseTag(tag_t *tag, char buf[], size_t len);
   void enableReader();
   void disableReader();
 

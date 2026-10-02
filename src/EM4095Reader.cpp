@@ -2,7 +2,7 @@
 #include "EM4095Reader.h"
 #include "Arduino.h"
 #include "util.h"
-
+#include <stdio.h>
 
 void EM4095Reader::begin(int enShdPin, int dmodPin, int clkPin) {
   _dmodPin = dmodPin;
@@ -160,9 +160,14 @@ double EM4095Reader::antennaFrequency() {
   return frequency;
 }
 
-void EM4095Reader::printTag(tag_t* tag) {
-  char buffer[256];
+void EM4095Reader::printTag(tag_t *tag) {
+  const size_t bufSize = 256;
+  char buffer[bufSize];
+  parseTag(tag, buffer, bufSize);
+  Serial.println(buffer);
+}
 
+void EM4095Reader::parseTag(tag_t *tag, char buf[], size_t len) {
   // printf cannot format integers larger then 32-bits.
   // The id field is 38-bits so we need to do some additional processing to it.
   uint32_t idMsd = tag->id / 1000000000;
@@ -170,6 +175,6 @@ void EM4095Reader::printTag(tag_t* tag) {
   uint32_t data = tag->data[0] << 16 | tag->data[1] << 8 | tag->data[2];
 
   // This is the format that pet microchip lookup websites expect.
-  sprintf(buffer, "country: %03u\tid: %03u%09u\tdata: %ld", (uint16_t)tag->country, idMsd, idLsd, data);
-  Serial.println(buffer);
+  snprintf(buf, len, "country: %03u\tid: %03u%09u\tdata: %u",
+           (uint16_t)tag->country, idMsd, idLsd, data);
 }
