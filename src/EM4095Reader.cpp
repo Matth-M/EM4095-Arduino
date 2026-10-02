@@ -126,17 +126,9 @@ bool EM4095Reader::getData(uint8_t *data) {
 
 void EM4095Reader::dmod_change() { this->putStateChange(); }
 
-void EM4095Reader::enableReader() {
-  // EM4095Reader pin is enabled by SHD pin. When 5V is applied to this pin, the
-  // reader is disabled, and when 0V(GND) is applied, the reader is enabled. The
-  // ESP32 is working with 3V3 and cannot output 5V. On gate v6, a NMOS is used
-  // to connect SHD to GND when EN_SHD signal is HIGH (in the MCU POV, so 3V3)
-  // which enables the reader and a pull-up resistor to 5V to disable the reader
-  // when EN_SHD is LOW.
-  digitalWrite(_enShdPin, HIGH);
-}
+void EM4095Reader::enableReader() { digitalWrite(_enShdPin, LOW); }
 
-void EM4095Reader::disableReader() { digitalWrite(_enShdPin, LOW); }
+void EM4095Reader::disableReader() { digitalWrite(_enShdPin, HIGH); }
 
 // To measure frequency, count the number of period (rising interrupts)
 // in a given time. We need to know when is the first period
