@@ -11,10 +11,12 @@ void EM4095Reader::begin(int enShdPin, int dmodPin, int clkPin) {
   pinMode(_enShdPin, OUTPUT);
   pinMode(_dmodPin, INPUT);
   pinMode(_clkPin, INPUT);
-	enableReader();
+  enableReader();
 }
 
-void EM4095Reader::putStateChange(uint32_t time) { _decoder.putStateChange(time); }
+void EM4095Reader::putStateChange(uint32_t time) {
+  _decoder.putStateChange(time);
+}
 
 bool EM4095Reader::getTag(tag_t *tag) {
   _decoder.parseTimestamps();
@@ -29,7 +31,7 @@ bool EM4095Reader::findHeader() {
   }
 
   // The header starts with 10 zeros and ends with a one.
-	// If no header is found, break
+  // If no header is found, break
   while (true) {
     if (!_decoder.getBit(&bit)) {
       return false;
@@ -92,7 +94,6 @@ uint16_t EM4095Reader::crc16k(uint16_t crc, uint8_t *mem, uint8_t len) {
 
   return crc;
 }
-
 
 bool EM4095Reader::getData(uint8_t *data) {
   // Block until we identify a valid tag header.
